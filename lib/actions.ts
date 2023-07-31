@@ -1,5 +1,5 @@
 import { ProjectForm } from '@/common.types';
-import { createProjectMutation, createUserMutation, getUserQuery } from '@/grafql';
+import { createProjectMutation, createUserMutation, getUserQuery, updateProjectMutation } from '@/grafql';
 
 import { Query } from '@grafbase/sdk/dist/src/query'
 import { GraphQLClient } from 'graphql-request'
@@ -54,6 +54,8 @@ export const fetchToken = async () => {
     }
   };
 
+  
+
 const makeGraphQLRequest = async (query: string, variables : {}) => {
 
     try {
@@ -80,3 +82,32 @@ export const createUser = (name:string ,email: string, avatarUrl: string ) => {
     
     return makeGraphQLRequest(createUserMutation, variables);
 }
+
+
+export const updateProject = async (form: ProjectForm, projectId: string, token: string) => {
+    function isBase64DataURL(value: string) {
+      const base64Regex = /^data:image\/[a-z]+;base64,/;
+      return base64Regex.test(value);
+    }
+  
+    let updatedForm = { ...form };
+  
+    const isUploadingNewImage = isBase64DataURL(form.image);
+  
+    if (isUploadingNewImage) {
+      const imageUrl = await uploadImage(form.image);
+  
+      if (imageUrl.url) {
+        updatedForm = { ...updatedForm, image: imageUrl.url };
+      }
+    }
+  
+    client.setHeader("Authorization", `Bearer ${token}`);
+  
+    const variables = {
+      id: projectId,
+      input: updatedForm,
+    };
+  
+    return makeGraphQLRequest(updateProjectMutation, variables);
+  };
