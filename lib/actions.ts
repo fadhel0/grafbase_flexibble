@@ -54,7 +54,34 @@ export const fetchToken = async () => {
     }
   };
 
+  export const updateProject = async (form: ProjectForm, projectId: string, token: string) => {
+    function isBase64DataURL(value: string) {
+      const base64Regex = /^data:image\/[a-z]+;base64,/;
+      return base64Regex.test(value);
+    }
   
+    let updatedForm = { ...form };
+  
+    const isUploadingNewImage = isBase64DataURL(form.image);
+  
+    if (isUploadingNewImage) {
+      const imageUrl = await uploadImage(form.image);
+  
+      if (imageUrl.url) {
+        updatedForm = { ...updatedForm, image: imageUrl.url };
+      }
+    }
+  
+    client.setHeader("Authorization", `Bearer ${token}`);
+  
+    const variables = {
+      id: projectId,
+      input: updatedForm,
+    };
+  
+    return makeGraphQLRequest(updateProjectMutation, variables);
+  };
+
 
 const makeGraphQLRequest = async (query: string, variables : {}) => {
 
@@ -82,32 +109,3 @@ export const createUser = (name:string ,email: string, avatarUrl: string ) => {
     
     return makeGraphQLRequest(createUserMutation, variables);
 }
-
-
-export const updateProject = async (form: ProjectForm, projectId: string, token: string) => {
-    function isBase64DataURL(value: string) {
-      const base64Regex = /^data:image\/[a-z]+;base64,/;
-      return base64Regex.test(value);
-    }
-  
-    let updatedForm = { ...form };
-  
-    const isUploadingNewImage = isBase64DataURL(form.image);
-  
-    if (isUploadingNewImage) {
-      const imageUrl = await uploadImage(form.image);
-  
-      if (imageUrl.url) {
-        updatedForm = { ...updatedForm, image: imageUrl.url };
-      }
-    }
-  
-    client.setHeader("Authorization", `Bearer ${token}`);
-  
-    const variables = {
-      id: projectId,
-      input: updatedForm,
-    };
-  
-    return makeGraphQLRequest(updateProjectMutation, variables);
-  };
