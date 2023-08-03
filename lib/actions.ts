@@ -1,5 +1,5 @@
 import { ProjectForm } from '@/common.types';
-import { createProjectMutation, createUserMutation, getProjectByIdQuery, getUserQuery, projectsQuery, updateProjectMutation } from '@/grafql';
+import { createProjectMutation, createUserMutation, getProjectByIdQuery, getProjectsOfUserQuery, getUserQuery, projectsQuery, updateProjectMutation } from '@/grafql';
 
 import { Query } from '@grafbase/sdk/dist/src/query'
 import { GraphQLClient } from 'graphql-request'
@@ -120,4 +120,9 @@ export const fetchAllProjects = async (category?: string, endcursor?: string) =>
 export const getProjectDetails = (id: string) => {
   client.setHeader('x-api-key', apiKey);
   return makeGraphQLRequest(getProjectByIdQuery, { id });
+}
+
+export const getUserProjects = (id: string, last?: any) => {
+  client.setHeader('x-api-key', apiKey);
+  return makeGraphQLRequest(getProjectsOfUserQuery, { id, last });
 }
