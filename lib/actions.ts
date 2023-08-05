@@ -110,11 +110,11 @@ export const createUser = (name:string ,email: string, avatarUrl: string ) => {
     return makeGraphQLRequest(createUserMutation, variables);
 }
 
-export const fetchAllProjects = async (category?: string, endcursor?: string) => {
+export const fetchAllProjects = async (category?: string, endCursor?: string) => {
 
   client.setHeader('x-api-key', apiKey);
 
-  return makeGraphQLRequest(projectsQuery, { category, endcursor})
+  return makeGraphQLRequest(projectsQuery, { category, endCursor})
 }
 
 export const getProjectDetails = (id: string) => {
