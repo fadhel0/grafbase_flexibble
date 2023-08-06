@@ -27,8 +27,8 @@ type Props ={
 }
 
 export const dynamic = 'force-dynamic';
-export const dynamicParams = 'true';
-export const revaldate = 0;
+// export const dynamicParams = 'true';
+// export const revaldate = 0;
 
 const Home = async ( {searchParams : {category, endcursor}}: Props ) => {
 
