@@ -5,8 +5,8 @@ import ProjectCard from "@/components/ProjectCard";
 import { fetchAllProjects } from "@/lib/actions";
 
 type SearchParams = {
-  category?: string ;
-  endcursor?: string ;
+  category?: string | null;
+  endcursor?: string | null;
 }
 
 type Props = {
@@ -25,7 +25,9 @@ type ProjectSearch = {
   },
 }
 
-
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+export const revalidate = 0;
 
 const Home = async ({ searchParams: { category, endcursor } }: Props) => {
   const data = await fetchAllProjects(category, endcursor) as ProjectSearch
@@ -64,7 +66,7 @@ const Home = async ({ searchParams: { category, endcursor } }: Props) => {
         startCursor={data?.projectSearch?.pageInfo?.startCursor} 
         endCursor={data?.projectSearch?.pageInfo?.endCursor} 
         hasPreviousPage={data?.projectSearch?.pageInfo?.hasPreviousPage} 
-        hasNextPage={data?.projectSearch?.pageInfo.hasNextPage}
+        hasNextPage={data?.projectSearch?.pageInfo?.hasNextPage}
       />
     </section>
   )
